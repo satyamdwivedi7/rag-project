@@ -78,10 +78,10 @@ export default function Home() {
           body: JSON.stringify({ question: q, docs: selectedDocs }),
         });
         const data = await res.json();
-        if (data.error) {
+        if (!res.ok || data.error) {
           setMessages((prev) => [
             ...prev,
-            { id: crypto.randomUUID(), role: "system", text: data.error },
+            { id: crypto.randomUUID(), role: "system", text: data.error ?? "Compare failed." },
           ]);
         } else {
           setMessages((prev) => [
@@ -97,10 +97,10 @@ export default function Home() {
           body: JSON.stringify({ question: q, fileUri }),
         });
         const data = await res.json();
-        if (data.error) {
+        if (!res.ok || data.error) {
           setMessages((prev) => [
             ...prev,
-            { id: crypto.randomUUID(), role: "system", text: data.error },
+            { id: crypto.randomUUID(), role: "system", text: data.error ?? "Request failed." },
           ]);
         } else {
           setMessages((prev) => [

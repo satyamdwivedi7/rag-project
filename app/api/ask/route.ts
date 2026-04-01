@@ -36,7 +36,8 @@ export async function POST(req: NextRequest) {
   try {
     const { question, fileUri } = await req.json();
 
-    if (!fileUri) {
+    const GEMINI_FILE_URI_PREFIX = "https://generativelanguage.googleapis.com/";
+    if (!fileUri || !String(fileUri).startsWith(GEMINI_FILE_URI_PREFIX)) {
       return NextResponse.json(
         { answer: "No document uploaded. Please upload a PDF first.", citations: [] },
         { status: 400 }

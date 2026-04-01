@@ -48,11 +48,16 @@ export async function POST(req: NextRequest) {
   try {
     const { question, docs }: { question: string; docs: DocRef[] } = await req.json();
 
+    const GEMINI_FILE_URI_PREFIX = "https://generativelanguage.googleapis.com/";
     if (!Array.isArray(docs) || docs.length < 2) {
       return NextResponse.json(
         { error: "Compare requires at least 2 documents" },
         { status: 400 }
       );
+    }
+
+    if (!docs.every((d) => typeof d.fileUri === "string" && d.fileUri.startsWith(GEMINI_FILE_URI_PREFIX))) {
+      return NextResponse.json({ error: "Invalid file URI" }, { status: 400 });
     }
 
     if (!question?.trim()) {

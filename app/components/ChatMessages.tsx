@@ -1,5 +1,5 @@
 "use client";
-import { useRef, useEffect, useLayoutEffect, useState } from "react";
+import { useRef, useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import type { Message } from "../types";
 
@@ -10,15 +10,15 @@ type Props = {
 
 export default function ChatMessages({ messages, loading }: Props) {
   const endRef = useRef<HTMLDivElement>(null);
-  const [expandedIdx, setExpandedIdx] = useState<number | null>(null);
+  const [expandedId, setExpandedId] = useState<string | null>(null);
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, loading]);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    if (messages.length <= 1) setExpandedIdx(null);
+    if (messages.length <= 1) setExpandedId(null);
   }, [messages]);
 
   return (
@@ -56,7 +56,7 @@ export default function ChatMessages({ messages, loading }: Props) {
         </div>
       )}
 
-      {messages.map((m, i) => {
+      {messages.map((m) => {
         if (m.role === "system") {
           return (
             <div key={m.id} style={{ display: "flex", justifyContent: "center" }}>
@@ -241,7 +241,7 @@ export default function ChatMessages({ messages, loading }: Props) {
 
         const isUser = m.role === "user";
         const hasCitations = !isUser && m.citations && m.citations.length > 0;
-        const isExpanded = expandedIdx === i;
+        const isExpanded = expandedId === m.id;
 
         return (
           <div
@@ -282,7 +282,7 @@ export default function ChatMessages({ messages, loading }: Props) {
               {hasCitations && (
                 <div>
                   <button
-                    onClick={() => setExpandedIdx(isExpanded ? null : i)}
+                    onClick={() => setExpandedId(isExpanded ? null : m.id)}
                     style={{
                       fontSize: "0.65rem",
                       color: "var(--fg-muted)",

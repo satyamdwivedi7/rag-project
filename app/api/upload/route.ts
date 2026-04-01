@@ -50,7 +50,7 @@ export async function POST(req: NextRequest) {
       mimeType: "application/pdf",
       displayName: file.name,
     });
-    await unlink(tmpPath);
+    await unlink(tmpPath).catch(() => {});
 
     const fileUri = uploaded.file.uri;
 
