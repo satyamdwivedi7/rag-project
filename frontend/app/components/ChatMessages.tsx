@@ -12,6 +12,7 @@ type Props = {
 
 export default function ChatMessages({ messages, loading }: Props) {
   const endRef = useRef<HTMLDivElement>(null);
+  const [expandedIdx, setExpandedIdx] = useState<number | null>(null);
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -74,38 +75,107 @@ export default function ChatMessages({ messages, loading }: Props) {
         }
 
         const isUser = m.role === "user";
+        const hasCitations = !isUser && m.citations && m.citations.length > 0;
+        const isExpanded = expandedIdx === i;
+
         return (
           <div
             key={i}
             style={{ display: "flex", justifyContent: isUser ? "flex-end" : "flex-start" }}
           >
-            <div
-              style={{
-                maxWidth: "80%",
-                borderRadius: isUser ? "16px 16px 4px 16px" : "16px 16px 16px 4px",
-                padding: "0.65rem 0.9rem",
-                fontSize: "0.83rem",
-                lineHeight: 1.6,
-                background: isUser ? "var(--user-bg)" : "var(--ai-bg)",
-                color: isUser ? "var(--user-fg)" : "var(--ai-fg)",
-                border: isUser
-                  ? "1px solid var(--accent-rim)"
-                  : "1px solid var(--border)",
-                fontFamily: "var(--font-body)",
-              }}
-            >
-              {isUser ? (
-                m.text
-              ) : (
-                <div
-                  className="prose prose-sm max-w-none
-                    prose-p:my-1.5 prose-li:my-0.5
-                    prose-headings:font-semibold prose-headings:text-[var(--fg)] prose-headings:mt-3 prose-headings:mb-1.5
-                    prose-code:bg-[var(--bg-left)] prose-code:px-1 prose-code:rounded prose-code:text-[0.75rem]
-                    prose-strong:text-[var(--fg)] prose-a:text-[var(--accent)]"
-                  style={{ color: "var(--ai-fg)" }}
-                >
-                  <ReactMarkdown>{m.text}</ReactMarkdown>
+            <div style={{ maxWidth: "80%", display: "flex", flexDirection: "column", gap: "0.3rem" }}>
+              <div
+                style={{
+                  borderRadius: isUser ? "16px 16px 4px 16px" : "16px 16px 16px 4px",
+                  padding: "0.65rem 0.9rem",
+                  fontSize: "0.83rem",
+                  lineHeight: 1.6,
+                  background: isUser ? "var(--user-bg)" : "var(--ai-bg)",
+                  color: isUser ? "var(--user-fg)" : "var(--ai-fg)",
+                  border: isUser
+                    ? "1px solid var(--accent-rim)"
+                    : "1px solid var(--border)",
+                  fontFamily: "var(--font-body)",
+                }}
+              >
+                {isUser ? (
+                  m.text
+                ) : (
+                  <div
+                    className="prose prose-sm max-w-none
+                      prose-p:my-1.5 prose-li:my-0.5
+                      prose-headings:font-semibold prose-headings:text-[var(--fg)] prose-headings:mt-3 prose-headings:mb-1.5
+                      prose-code:bg-[var(--bg-left)] prose-code:px-1 prose-code:rounded prose-code:text-[0.75rem]
+                      prose-strong:text-[var(--fg)] prose-a:text-[var(--accent)]"
+                    style={{ color: "var(--ai-fg)" }}
+                  >
+                    <ReactMarkdown>{m.text}</ReactMarkdown>
+                  </div>
+                )}
+              </div>
+
+              {hasCitations && (
+                <div>
+                  <button
+                    onClick={() => setExpandedIdx(isExpanded ? null : i)}
+                    style={{
+                      fontSize: "0.65rem",
+                      color: "var(--fg-muted)",
+                      fontFamily: "var(--font-body)",
+                      background: "transparent",
+                      border: "none",
+                      cursor: "pointer",
+                      padding: "0.1rem 0.25rem",
+                      letterSpacing: "0.04em",
+                    }}
+                  >
+                    {isExpanded ? "Sources ↑" : "Sources ↓"}
+                  </button>
+
+                  {isExpanded && (
+                    <div
+                      style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: "0.4rem",
+                        marginTop: "0.2rem",
+                      }}
+                    >
+                      {m.citations!.map((c, ci) => (
+                        <div
+                          key={ci}
+                          style={{
+                            borderRadius: 8,
+                            padding: "0.55rem 0.7rem",
+                            background: "var(--bg-left)",
+                            border: "1px solid var(--border)",
+                          }}
+                        >
+                          <p
+                            style={{
+                              fontSize: "0.72rem",
+                              fontFamily: "monospace",
+                              color: "var(--fg-secondary)",
+                              lineHeight: 1.55,
+                              marginBottom: "0.3rem",
+                            }}
+                          >
+                            &ldquo;{c.excerpt}&rdquo;
+                          </p>
+                          <p
+                            style={{
+                              fontSize: "0.65rem",
+                              fontFamily: "var(--font-body)",
+                              color: "var(--fg-muted)",
+                              letterSpacing: "0.02em",
+                            }}
+                          >
+                            {c.relevance}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               )}
             </div>
@@ -130,12 +200,7 @@ export default function ChatMessages({ messages, loading }: Props) {
               <span
                 key={n}
                 className={`dot dot-${n}`}
-                style={{
-                  width: 5,
-                  height: 5,
-                  background: "var(--accent)",
-                  opacity: 0.6,
-                }}
+                style={{ width: 5, height: 5, background: "var(--accent)", opacity: 0.6 }}
               />
             ))}
           </div>
