@@ -10,7 +10,8 @@ export type DocumentBrief = {
 };
 
 export type Message = {
-  role: string;
+  id: string;
+  role: "user" | "ai" | "system";
   text: string;
   citations?: Citation[];
 };

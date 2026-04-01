@@ -16,7 +16,7 @@ const outfit = Outfit({
 export const metadata: Metadata = {
   title: "DocMind — Document Intelligence",
   description:
-    "Upload any PDF and have intelligent conversations about its content. Powered by Gemini AI and ChromaDB.",
+    "Upload any PDF and ask questions. Get citation-grounded answers powered by Gemini 2.5 Flash.",
 };
 
 export default function RootLayout({

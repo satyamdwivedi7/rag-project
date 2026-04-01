@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { GoogleAIFileManager } from "@google/generative-ai/server";
 import { GoogleGenerativeAI, SchemaType, type Schema } from "@google/generative-ai";
-import { writeFileSync, unlinkSync } from "fs";
+import { writeFile, unlink } from "fs/promises";
 import { tmpdir } from "os";
 import { join } from "path";
 
@@ -37,16 +37,20 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "No file provided" }, { status: 400 });
     }
 
+    if (file.type !== "application/pdf" && !file.name.toLowerCase().endsWith(".pdf")) {
+      return NextResponse.json({ error: "Only PDF files are supported" }, { status: 400 });
+    }
+
     const buffer = Buffer.from(await file.arrayBuffer());
     const tmpPath = join(tmpdir(), `docmind-${Date.now()}.pdf`);
-    writeFileSync(tmpPath, buffer);
+    await writeFile(tmpPath, buffer);
 
     const fileManager = new GoogleAIFileManager(process.env.GEMINI_API_KEY!);
     const uploaded = await fileManager.uploadFile(tmpPath, {
       mimeType: "application/pdf",
       displayName: file.name,
     });
-    unlinkSync(tmpPath);
+    await unlink(tmpPath);
 
     const fileUri = uploaded.file.uri;
 

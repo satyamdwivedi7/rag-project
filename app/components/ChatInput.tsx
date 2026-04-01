@@ -4,7 +4,7 @@ type Props = {
   value: string;
   disabled: boolean;
   onChange: (v: string) => void;
-  onSend: () => void;
+  onSend: (directQuestion?: string) => void;
 };
 
 export default function ChatInput({ value, disabled, onChange, onSend }: Props) {
@@ -22,7 +22,7 @@ export default function ChatInput({ value, disabled, onChange, onSend }: Props) 
           disabled={disabled}
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && !e.shiftKey && onSend()}
+          onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) onSend(); }}
           placeholder={disabled ? "Upload a document first" : "Ask anything about your document…"}
           style={{
             flex: 1,
@@ -47,7 +47,7 @@ export default function ChatInput({ value, disabled, onChange, onSend }: Props) 
         />
         <button
           disabled={disabled || !value.trim()}
-          onClick={onSend}
+          onClick={() => onSend()}
           className="send-btn"
           style={{
             borderRadius: 10,

@@ -17,6 +17,7 @@ export default function Home() {
   const [brief, setBrief] = useState<DocumentBrief | null>(null);
 
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (loading) return;
     const file = e.target.files?.[0];
     if (!file) return;
     setUploading(true);
@@ -29,9 +30,9 @@ export default function Home() {
       setUploadedFile(file.name);
       setFileUri(data.fileUri);
       setBrief(data.brief ?? null);
-      setMessages([{ role: "system", text: data.message }]);
+      setMessages([{ id: crypto.randomUUID(), role: "system", text: data.message }]);
     } catch (err) {
-      setMessages([{ role: "system", text: `Upload failed: ${err instanceof Error ? err.message : "unknown error"}` }]);
+      setMessages([{ id: crypto.randomUUID(), role: "system", text: `Upload failed: ${err instanceof Error ? err.message : "unknown error"}` }]);
     } finally {
       setUploading(false);
     }
@@ -41,7 +42,7 @@ export default function Home() {
     const q = directQuestion ?? question;
     if (!q.trim() || !fileUri) return;
     if (!directQuestion) setQuestion("");
-    setMessages((prev) => [...prev, { role: "user", text: q }]);
+    setMessages((prev) => [...prev, { id: crypto.randomUUID(), role: "user", text: q }]);
     setLoading(true);
     try {
       const res = await fetch("/api/ask", {
@@ -50,14 +51,18 @@ export default function Home() {
         body: JSON.stringify({ question: q, fileUri }),
       });
       const data = await res.json();
-      setMessages((prev) => [
-        ...prev,
-        { role: "ai", text: data.answer ?? data.error, citations: data.citations ?? [] },
-      ]);
+      if (data.error) {
+        setMessages((prev) => [...prev, { id: crypto.randomUUID(), role: "system", text: data.error }]);
+      } else {
+        setMessages((prev) => [
+          ...prev,
+          { id: crypto.randomUUID(), role: "ai", text: data.answer, citations: data.citations ?? [] },
+        ]);
+      }
     } catch {
       setMessages((prev) => [
         ...prev,
-        { role: "ai", text: "Something went wrong. Please try again." },
+        { id: crypto.randomUUID(), role: "system", text: "Something went wrong. Please try again." },
       ]);
     } finally {
       setLoading(false);

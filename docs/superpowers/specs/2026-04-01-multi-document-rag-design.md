@@ -80,7 +80,7 @@ type Message = {
 
 **Derived:**
 - A query is sendable when `selectedUris.size >= 1` (normal) or `selectedUris.size >= 2` (compare mode)
-- `handleSend` routes to `/api/ask` with `{ question, fileUri }` (first selected URI) when `compareMode === false`
+- `handleSend` routes to `/api/ask` with `{ question, fileUri: [...selectedUris][0] }` when `compareMode === false`
 - `handleSend` routes to `/api/compare` with `{ question, fileUris: [...selectedUris] }` when `compareMode === true`
 
 ---
@@ -156,8 +156,7 @@ Footer unchanged.
 - Regular messages (no `comparison`) render exactly as today — no change
 
 ### `app/components/UploadZone.tsx`
-- Removed from main layout in `page.tsx`; upload is now triggered from LeftPanel
-- Component file can be deleted or kept for potential reuse — the LeftPanel takes over its role
+- Delete this file. Upload is now triggered by a button inside `LeftPanel`; `UploadZone` is no longer used anywhere.
 
 ---
 

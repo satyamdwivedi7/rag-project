@@ -39,7 +39,14 @@ export async function POST(req: NextRequest) {
     if (!fileUri) {
       return NextResponse.json(
         { answer: "No document uploaded. Please upload a PDF first.", citations: [] },
-        { status: 200 }
+        { status: 400 }
+      );
+    }
+
+    if (!question?.trim()) {
+      return NextResponse.json(
+        { answer: "No question provided.", citations: [] },
+        { status: 400 }
       );
     }
 

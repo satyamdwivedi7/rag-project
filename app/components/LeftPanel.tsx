@@ -3,18 +3,18 @@ import type { DocumentBrief } from "../types";
 const staticFeatures = [
   {
     label: "01",
-    title: "Semantic chunking",
-    body: "Your PDF is split into overlapping passages and stored as vector embeddings — not keyword indexes.",
+    title: "Document-native reasoning",
+    body: "Your PDF is sent directly to Gemini's context window — no chunking, no retrieval step, no lost nuance.",
   },
   {
     label: "02",
-    title: "Grounded answers",
-    body: "Responses are constrained to what is in your document. Nothing is invented.",
+    title: "Citation-grounded answers",
+    body: "Every response is paired with verbatim excerpts from your document so you can verify the source.",
   },
   {
     label: "03",
     title: "Structured output",
-    body: "Gemini 2.5 Flash formats every answer in Markdown — headings, bullets, and bold exactly where they help.",
+    body: "Answers are schema-constrained JSON — not free-form text. Hallucination is an engineering problem, not just a prompt one.",
   },
 ];
 

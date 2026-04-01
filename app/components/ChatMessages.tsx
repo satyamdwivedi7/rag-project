@@ -3,8 +3,6 @@ import { useRef, useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import type { Message } from "../types";
 
-export type { Message };
-
 type Props = {
   messages: Message[];
   loading: boolean;
@@ -17,6 +15,10 @@ export default function ChatMessages({ messages, loading }: Props) {
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, loading]);
+
+  useEffect(() => {
+    if (messages.length <= 1) setExpandedIdx(null);
+  }, [messages]);
 
   return (
     <div
@@ -56,7 +58,7 @@ export default function ChatMessages({ messages, loading }: Props) {
       {messages.map((m, i) => {
         if (m.role === "system") {
           return (
-            <div key={i} style={{ display: "flex", justifyContent: "center" }}>
+            <div key={m.id} style={{ display: "flex", justifyContent: "center" }}>
               <span
                 style={{
                   fontSize: "0.68rem",
@@ -80,7 +82,7 @@ export default function ChatMessages({ messages, loading }: Props) {
 
         return (
           <div
-            key={i}
+            key={m.id}
             style={{ display: "flex", justifyContent: isUser ? "flex-end" : "flex-start" }}
           >
             <div style={{ maxWidth: "80%", display: "flex", flexDirection: "column", gap: "0.3rem" }}>
