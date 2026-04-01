@@ -63,7 +63,6 @@ export default function Home() {
       <LeftPanel />
       <div style={{ width: 1, flexShrink: 0, background: "var(--border)" }} />
       <div style={{ flex: 1, display: "flex", flexDirection: "column", background: "var(--bg)", overflow: "hidden" }}>
-        {/* Top bar */}
         <div style={{
           flexShrink: 0, padding: "0.9rem 1.25rem",
           borderBottom: "1px solid var(--border-light)",

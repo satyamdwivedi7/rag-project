@@ -33,9 +33,7 @@ export default function LeftPanel() {
         overflow: "hidden",
       }}
     >
-      {/* Top: brand + description + features */}
       <div>
-        {/* Wordmark */}
         <div className="fade-up" style={{ marginBottom: "2.5rem" }}>
           <div
             style={{
@@ -78,7 +76,6 @@ export default function LeftPanel() {
           </p>
         </div>
 
-        {/* Divider */}
         <div
           className="fade-up delay-1"
           style={{
@@ -88,7 +85,6 @@ export default function LeftPanel() {
           }}
         />
 
-        {/* Features */}
         <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
           {features.map((f, i) => (
             <div
@@ -138,7 +134,6 @@ export default function LeftPanel() {
         </div>
       </div>
 
-      {/* Footer */}
       <div style={{ marginTop: "2.5rem" }}>
         <div style={{ height: 1, background: "var(--border-light)", marginBottom: "1rem" }} />
         <div

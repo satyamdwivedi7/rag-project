@@ -1,7 +1,6 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
-/* ── Design tokens ─────────────────────────────────────────────── */
 :root,
 [data-theme="light"] {
   --bg:           #FEFCF9;
@@ -53,7 +52,26 @@ html, body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* ── Scrollbar ─────────────────────────────────────────────────── */
+[data-theme="dark"] .prose {
+  --tw-prose-body: #D8D4CC;
+  --tw-prose-headings: #E8E4DC;
+  --tw-prose-lead: #9A9690;
+  --tw-prose-links: #5FA87A;
+  --tw-prose-bold: #E8E4DC;
+  --tw-prose-counters: #9A9690;
+  --tw-prose-bullets: #5A5752;
+  --tw-prose-hr: #252521;
+  --tw-prose-quotes: #E8E4DC;
+  --tw-prose-quote-borders: #252521;
+  --tw-prose-captions: #9A9690;
+  --tw-prose-kbd: #E8E4DC;
+  --tw-prose-code: #E8E4DC;
+  --tw-prose-pre-code: #D8D4CC;
+  --tw-prose-pre-bg: #111210;
+  --tw-prose-th-borders: #252521;
+  --tw-prose-td-borders: #1E1E1B;
+}
+
 .chat-scroll {
   scrollbar-width: thin;
   scrollbar-color: var(--border) transparent;
@@ -62,21 +80,18 @@ html, body {
 .chat-scroll::-webkit-scrollbar-track { background: transparent; }
 .chat-scroll::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
 
-/* ── Upload zone ───────────────────────────────────────────────── */
 .upload-zone { transition: background 0.15s, border-color 0.15s; }
 .upload-zone:hover {
   background: var(--accent-pale) !important;
   border-color: var(--accent-rim) !important;
 }
 
-/* ── Send button ───────────────────────────────────────────────── */
 .send-btn { transition: background 0.15s, color 0.15s; }
 .send-btn:not(:disabled):hover {
   background: var(--accent) !important;
   color: #fff !important;
 }
 
-/* ── Typing animation ──────────────────────────────────────────── */
 @keyframes bounce {
   0%, 60%, 100% { transform: translateY(0); }
   30%           { transform: translateY(-4px); }
@@ -86,7 +101,6 @@ html, body {
 .dot-2 { animation: bounce 1.2s ease-in-out 0.15s infinite; }
 .dot-3 { animation: bounce 1.2s ease-in-out 0.3s infinite; }
 
-/* ── Staggered page entry ──────────────────────────────────────── */
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(10px); }
   to   { opacity: 1; transform: translateY(0); }

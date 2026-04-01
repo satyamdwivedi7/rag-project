@@ -13,7 +13,6 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "No file provided" }, { status: 400 });
     }
 
-    // Write to /tmp (writable in Vercel serverless)
     const buffer = Buffer.from(await file.arrayBuffer());
     const tmpPath = join(tmpdir(), `docmind-${Date.now()}.pdf`);
     writeFileSync(tmpPath, buffer);
