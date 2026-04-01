@@ -1,8 +1,9 @@
 "use client";
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
+import type { Message } from "../types";
 
-export type Message = { role: string; text: string };
+export type { Message };
 
 type Props = {
   messages: Message[];
