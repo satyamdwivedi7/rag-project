@@ -34,7 +34,8 @@ Question: ${question}`,
 
     return NextResponse.json({ answer: result.response.text() });
   } catch (err) {
-    console.error("Ask error:", err);
-    return NextResponse.json({ error: "Request failed" }, { status: 500 });
+    const message = err instanceof Error ? err.message : String(err);
+    console.error("Ask error:", message);
+    return NextResponse.json({ error: `Request failed: ${message}` }, { status: 500 });
   }
 }

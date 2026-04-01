@@ -2,7 +2,8 @@
 @plugin "@tailwindcss/typography";
 
 /* ── Design tokens ─────────────────────────────────────────────── */
-:root {
+:root,
+[data-theme="light"] {
   --bg:           #FEFCF9;
   --bg-left:      #F5F0E8;
   --fg:           #1A1916;
@@ -18,6 +19,28 @@
   --user-fg:      #1B3A28;
   --ai-bg:        #FFFFFF;
   --ai-fg:        #2A2825;
+  --toggle-bg:    #E4DED5;
+  --toggle-fg:    #6B6760;
+}
+
+[data-theme="dark"] {
+  --bg:           #111210;
+  --bg-left:      #0D0F0D;
+  --fg:           #E8E4DC;
+  --fg-secondary: #9A9690;
+  --fg-muted:     #5A5752;
+  --accent:       #5FA87A;
+  --accent-pale:  rgba(95, 168, 122, 0.12);
+  --accent-rim:   rgba(95, 168, 122, 0.28);
+  --border:       #252521;
+  --border-light: #1E1E1B;
+  --surface:      #17180F;
+  --user-bg:      #1A2E22;
+  --user-fg:      #C5E5D2;
+  --ai-bg:        #16180E;
+  --ai-fg:        #D8D4CC;
+  --toggle-bg:    #252521;
+  --toggle-fg:    #9A9690;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }

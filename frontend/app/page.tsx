@@ -4,6 +4,7 @@ import LeftPanel from "./components/LeftPanel";
 import UploadZone from "./components/UploadZone";
 import ChatMessages, { type Message } from "./components/ChatMessages";
 import ChatInput from "./components/ChatInput";
+import ThemeToggle from "./components/ThemeToggle";
 
 export default function Home() {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -72,17 +73,20 @@ export default function Home() {
           <span style={{ fontSize: "0.65rem", letterSpacing: "0.15em", textTransform: "uppercase", color: "var(--fg-muted)", fontFamily: "var(--font-body)" }}>
             Chat
           </span>
-          {uploadedFile && (
-            <span style={{
-              fontSize: "0.7rem", fontFamily: "var(--font-body)",
-              color: "var(--accent)", background: "var(--accent-pale)",
-              border: "1px solid var(--accent-rim)", borderRadius: 20,
-              padding: "0.2rem 0.65rem", maxWidth: 220,
-              overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
-            }}>
-              {uploadedFile}
-            </span>
-          )}
+          <div style={{ display: "flex", alignItems: "center", gap: "0.6rem" }}>
+            {uploadedFile && (
+              <span style={{
+                fontSize: "0.7rem", fontFamily: "var(--font-body)",
+                color: "var(--accent)", background: "var(--accent-pale)",
+                border: "1px solid var(--accent-rim)", borderRadius: 20,
+                padding: "0.2rem 0.65rem", maxWidth: 220,
+                overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
+              }}>
+                {uploadedFile}
+              </span>
+            )}
+            <ThemeToggle />
+          </div>
         </div>
 
         <UploadZone uploading={uploading} uploadedFile={uploadedFile} onFileChange={handleUpload} />
