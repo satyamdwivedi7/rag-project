@@ -6,6 +6,8 @@ from rag import ingest_pdf, ask
 
 app = FastAPI()
 
+os.makedirs("uploads", exist_ok=True)
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
