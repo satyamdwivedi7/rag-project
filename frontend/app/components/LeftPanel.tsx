@@ -1,4 +1,6 @@
-const features = [
+import type { DocumentBrief } from "../types";
+
+const staticFeatures = [
   {
     label: "01",
     title: "Semantic chunking",
@@ -16,7 +18,12 @@ const features = [
   },
 ];
 
-export default function LeftPanel() {
+type Props = {
+  brief: DocumentBrief | null;
+  onAskQuestion: (q: string) => void;
+};
+
+export default function LeftPanel({ brief, onAskQuestion }: Props) {
   return (
     <aside
       style={{
@@ -58,8 +65,7 @@ export default function LeftPanel() {
               color: "var(--fg)",
             }}
           >
-            Doc
-            <span style={{ color: "var(--accent)" }}>Mind</span>
+            Doc<span style={{ color: "var(--accent)" }}>Mind</span>
           </h1>
           <p
             style={{
@@ -71,67 +77,142 @@ export default function LeftPanel() {
               maxWidth: 300,
             }}
           >
-            Upload any PDF. Ask anything. Get answers drawn directly from your
-            document — not the internet.
+            Upload any PDF. Ask anything. Get answers drawn directly from your document — not the internet.
           </p>
         </div>
 
         <div
           className="fade-up delay-1"
-          style={{
-            height: 1,
-            background: "var(--border)",
-            marginBottom: "2rem",
-          }}
+          style={{ height: 1, background: "var(--border)", marginBottom: "2rem" }}
         />
 
-        <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
-          {features.map((f, i) => (
-            <div
-              key={f.label}
-              className={`fade-up delay-${i + 2}`}
-              style={{ display: "flex", gap: "1rem", alignItems: "flex-start" }}
+        {brief ? (
+          <div className="fade-up delay-2" style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
+            <p
+              style={{
+                fontSize: "0.78rem",
+                lineHeight: 1.7,
+                color: "var(--fg-secondary)",
+                fontFamily: "var(--font-body)",
+              }}
             >
-              <span
+              {brief.summary}
+            </p>
+
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "0.4rem" }}>
+              {brief.topics.map((topic) => (
+                <span
+                  key={topic}
+                  style={{
+                    fontSize: "0.65rem",
+                    fontFamily: "var(--font-body)",
+                    color: "var(--accent)",
+                    background: "var(--accent-pale)",
+                    border: "1px solid var(--accent-rim)",
+                    borderRadius: 20,
+                    padding: "0.15rem 0.55rem",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  {topic}
+                </span>
+              ))}
+            </div>
+
+            <div style={{ display: "flex", flexDirection: "column", gap: "0.25rem" }}>
+              <div
                 style={{
-                  fontFamily: "var(--font-display)",
-                  fontSize: "0.7rem",
-                  fontWeight: 600,
-                  color: "var(--accent)",
-                  marginTop: "0.15rem",
-                  flexShrink: 0,
-                  letterSpacing: "0.04em",
+                  fontSize: "0.6rem",
+                  letterSpacing: "0.12em",
+                  textTransform: "uppercase",
+                  color: "var(--fg-muted)",
+                  fontFamily: "var(--font-body)",
+                  marginBottom: "0.4rem",
                 }}
               >
-                {f.label}
-              </span>
-              <div>
-                <div
+                Suggested questions
+              </div>
+              {brief.questions.map((q) => (
+                <button
+                  key={q}
+                  onClick={() => onAskQuestion(q)}
                   style={{
-                    fontSize: "0.82rem",
-                    fontWeight: 600,
-                    color: "var(--fg)",
-                    marginBottom: "0.25rem",
-                    fontFamily: "var(--font-body)",
-                    letterSpacing: "-0.01em",
-                  }}
-                >
-                  {f.title}
-                </div>
-                <div
-                  style={{
+                    textAlign: "left",
                     fontSize: "0.75rem",
-                    lineHeight: 1.65,
-                    color: "var(--fg-muted)",
+                    color: "var(--fg-secondary)",
                     fontFamily: "var(--font-body)",
+                    lineHeight: 1.5,
+                    cursor: "pointer",
+                    padding: "0.35rem 0.5rem",
+                    borderRadius: 6,
+                    border: "1px solid transparent",
+                    background: "transparent",
+                    transition: "background 0.15s, border-color 0.15s",
+                    width: "100%",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = "var(--accent-pale)";
+                    e.currentTarget.style.borderColor = "var(--accent-rim)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = "transparent";
+                    e.currentTarget.style.borderColor = "transparent";
                   }}
                 >
-                  {f.body}
+                  {q}
+                </button>
+              ))}
+            </div>
+          </div>
+        ) : (
+          <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
+            {staticFeatures.map((f, i) => (
+              <div
+                key={f.label}
+                className={`fade-up delay-${i + 2}`}
+                style={{ display: "flex", gap: "1rem", alignItems: "flex-start" }}
+              >
+                <span
+                  style={{
+                    fontFamily: "var(--font-display)",
+                    fontSize: "0.7rem",
+                    fontWeight: 600,
+                    color: "var(--accent)",
+                    marginTop: "0.15rem",
+                    flexShrink: 0,
+                    letterSpacing: "0.04em",
+                  }}
+                >
+                  {f.label}
+                </span>
+                <div>
+                  <div
+                    style={{
+                      fontSize: "0.82rem",
+                      fontWeight: 600,
+                      color: "var(--fg)",
+                      marginBottom: "0.25rem",
+                      fontFamily: "var(--font-body)",
+                      letterSpacing: "-0.01em",
+                    }}
+                  >
+                    {f.title}
+                  </div>
+                  <div
+                    style={{
+                      fontSize: "0.75rem",
+                      lineHeight: 1.65,
+                      color: "var(--fg-muted)",
+                      fontFamily: "var(--font-body)",
+                    }}
+                  >
+                    {f.body}
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
 
       <div style={{ marginTop: "2.5rem" }}>
@@ -145,7 +226,7 @@ export default function LeftPanel() {
             fontFamily: "var(--font-body)",
           }}
         >
-          ChromaDB · Gemini 2.5 Flash · FastAPI
+          Gemini 2.5 Flash · Next.js · Vercel
         </div>
       </div>
     </aside>

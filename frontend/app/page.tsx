@@ -1,8 +1,9 @@
 "use client";
 import { useState } from "react";
+import type { Message, DocumentBrief } from "./types";
 import LeftPanel from "./components/LeftPanel";
 import UploadZone from "./components/UploadZone";
-import ChatMessages, { type Message } from "./components/ChatMessages";
+import ChatMessages from "./components/ChatMessages";
 import ChatInput from "./components/ChatInput";
 import ThemeToggle from "./components/ThemeToggle";
 
@@ -13,6 +14,7 @@ export default function Home() {
   const [uploadedFile, setUploadedFile] = useState("");
   const [fileUri, setFileUri] = useState("");
   const [loading, setLoading] = useState(false);
+  const [brief, setBrief] = useState<DocumentBrief | null>(null);
 
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -26,6 +28,7 @@ export default function Home() {
       if (data.error) throw new Error(data.error);
       setUploadedFile(file.name);
       setFileUri(data.fileUri);
+      setBrief(data.brief ?? null);
       setMessages([{ role: "system", text: data.message }]);
     } catch (err) {
       setMessages([{ role: "system", text: `Upload failed: ${err instanceof Error ? err.message : "unknown error"}` }]);
@@ -34,11 +37,11 @@ export default function Home() {
     }
   };
 
-  const handleSend = async () => {
-    if (!question.trim() || !fileUri) return;
-    const q = question;
+  const handleSend = async (directQuestion?: string) => {
+    const q = directQuestion ?? question;
+    if (!q.trim() || !fileUri) return;
+    if (!directQuestion) setQuestion("");
     setMessages((prev) => [...prev, { role: "user", text: q }]);
-    setQuestion("");
     setLoading(true);
     try {
       const res = await fetch("/api/ask", {
@@ -47,7 +50,10 @@ export default function Home() {
         body: JSON.stringify({ question: q, fileUri }),
       });
       const data = await res.json();
-      setMessages((prev) => [...prev, { role: "ai", text: data.answer ?? data.error }]);
+      setMessages((prev) => [
+        ...prev,
+        { role: "ai", text: data.answer ?? data.error, citations: data.citations ?? [] },
+      ]);
     } catch {
       setMessages((prev) => [
         ...prev,
@@ -60,7 +66,7 @@ export default function Home() {
 
   return (
     <div style={{ display: "flex", height: "100%", overflow: "hidden" }}>
-      <LeftPanel />
+      <LeftPanel brief={brief} onAskQuestion={handleSend} />
       <div style={{ width: 1, flexShrink: 0, background: "var(--border)" }} />
       <div style={{ flex: 1, display: "flex", flexDirection: "column", background: "var(--bg)", overflow: "hidden" }}>
         <div style={{
