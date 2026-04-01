@@ -16,7 +16,6 @@ export default function Home() {
   const [compareMode, setCompareMode] = useState(false);
 
   const handleUpload = async (file: File) => {
-    if (loading) return;
     setUploading(true);
     try {
       const form = new FormData();
@@ -147,7 +146,10 @@ export default function Home() {
         onToggleDoc={handleToggleDoc}
         onUpload={handleUpload}
         uploading={uploading}
-        onAskQuestion={handleSend}
+        onAskQuestion={(q) => {
+          setCompareMode(false);
+          handleSend(q);
+        }}
       />
       <div style={{ width: 1, flexShrink: 0, background: "var(--border)" }} />
       <div
