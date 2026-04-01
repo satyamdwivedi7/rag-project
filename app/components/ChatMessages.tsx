@@ -1,5 +1,5 @@
 "use client";
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useLayoutEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import type { Message } from "../types";
 
@@ -16,7 +16,8 @@ export default function ChatMessages({ messages, loading }: Props) {
     endRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, loading]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (messages.length <= 1) setExpandedIdx(null);
   }, [messages]);
 
