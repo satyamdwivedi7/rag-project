@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { Message, UploadedDoc } from "./types";
 import LeftPanel from "./components/LeftPanel";
 import ChatMessages from "./components/ChatMessages";
@@ -14,6 +14,15 @@ export default function Home() {
   const [docs, setDocs] = useState<UploadedDoc[]>([]);
   const [selectedUris, setSelectedUris] = useState<Set<string>>(new Set());
   const [compareMode, setCompareMode] = useState(false);
+  const [isDesktop, setIsDesktop] = useState(false);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(min-width: 1024px)");
+    const sync = () => setIsDesktop(mediaQuery.matches);
+    sync();
+    mediaQuery.addEventListener("change", sync);
+    return () => mediaQuery.removeEventListener("change", sync);
+  }, []);
 
   const handleUpload = async (file: File) => {
     setUploadingCount((n) => n + 1);
@@ -139,8 +148,17 @@ export default function Home() {
     selectedUris.size >= 1 && (!compareMode || selectedUris.size >= 2);
 
   return (
-    <div style={{ display: "flex", height: "100%", overflow: "hidden" }}>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: isDesktop ? "row" : "column",
+        height: "100%",
+        overflow: "hidden",
+        minWidth: 0,
+      }}
+    >
       <LeftPanel
+        isDesktop={isDesktop}
         docs={docs}
         selectedUris={selectedUris}
         onToggleDoc={handleToggleDoc}
@@ -151,10 +169,13 @@ export default function Home() {
           handleSend(q);
         }}
       />
-      <div style={{ width: 1, flexShrink: 0, background: "var(--border)" }} />
+      {isDesktop && (
+        <div style={{ width: 1, flexShrink: 0, background: "var(--border)" }} />
+      )}
       <div
         style={{
           flex: 1,
+          minWidth: 0,
           display: "flex",
           flexDirection: "column",
           background: "var(--bg)",
@@ -164,12 +185,13 @@ export default function Home() {
         <div
           style={{
             flexShrink: 0,
-            padding: "0.9rem 1.25rem",
+            padding: isDesktop ? "0.9rem 1.25rem" : "0.8rem 0.9rem",
             borderBottom: "1px solid var(--border-light)",
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
             background: "var(--surface)",
+            gap: "0.5rem",
           }}
         >
           <span
@@ -183,7 +205,14 @@ export default function Home() {
           >
             Chat
           </span>
-          <div style={{ display: "flex", alignItems: "center", gap: "0.6rem" }}>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "0.6rem",
+              minWidth: 0,
+            }}
+          >
             {topBarLabel && (
               <span
                 style={{
@@ -194,7 +223,7 @@ export default function Home() {
                   border: "1px solid var(--accent-rim)",
                   borderRadius: 20,
                   padding: "0.2rem 0.65rem",
-                  maxWidth: 220,
+                  maxWidth: isDesktop ? 220 : 150,
                   overflow: "hidden",
                   textOverflow: "ellipsis",
                   whiteSpace: "nowrap",
@@ -207,7 +236,7 @@ export default function Home() {
           </div>
         </div>
 
-        <ChatMessages messages={messages} loading={loading} />
+        <ChatMessages messages={messages} loading={loading} isDesktop={isDesktop} />
         <ChatInput
           value={question}
           disabled={!canSend}
@@ -216,6 +245,7 @@ export default function Home() {
           compareMode={compareMode}
           onToggleCompare={() => setCompareMode((m) => !m)}
           selectedCount={selectedUris.size}
+          isDesktop={isDesktop}
         />
       </div>
     </div>

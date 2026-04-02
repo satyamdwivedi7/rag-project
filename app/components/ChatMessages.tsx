@@ -6,9 +6,10 @@ import type { Message } from "../types";
 type Props = {
   messages: Message[];
   loading: boolean;
+  isDesktop: boolean;
 };
 
-export default function ChatMessages({ messages, loading }: Props) {
+export default function ChatMessages({ messages, loading, isDesktop }: Props) {
   const endRef = useRef<HTMLDivElement>(null);
   const [expandedId, setExpandedId] = useState<string | null>(null);
 
@@ -27,10 +28,11 @@ export default function ChatMessages({ messages, loading }: Props) {
       style={{
         flex: 1,
         overflowY: "auto",
-        padding: "1rem 1.25rem",
+        padding: isDesktop ? "1rem 1.25rem" : "0.8rem 0.7rem",
         display: "flex",
         flexDirection: "column",
         gap: "0.6rem",
+        minWidth: 0,
       }}
     >
       {messages.length === 0 && (
@@ -79,7 +81,7 @@ export default function ChatMessages({ messages, loading }: Props) {
         if (m.comparison) {
           return (
             <div key={m.id} style={{ display: "flex", justifyContent: "flex-start" }}>
-              <div style={{ maxWidth: "90%", display: "flex", flexDirection: "column", gap: "0.6rem" }}>
+              <div style={{ maxWidth: "100%", display: "flex", flexDirection: "column", gap: "0.6rem", minWidth: 0 }}>
                 <div
                   style={{
                     borderRadius: "16px 16px 16px 4px",
@@ -89,6 +91,8 @@ export default function ChatMessages({ messages, loading }: Props) {
                     display: "flex",
                     flexDirection: "column",
                     gap: "1rem",
+                    overflowWrap: "anywhere",
+                    wordBreak: "break-word",
                   }}
                 >
                   {m.comparison.sharedThemes.length > 0 && (
@@ -246,7 +250,15 @@ export default function ChatMessages({ messages, loading }: Props) {
             key={m.id}
             style={{ display: "flex", justifyContent: isUser ? "flex-end" : "flex-start" }}
           >
-            <div style={{ maxWidth: "80%", display: "flex", flexDirection: "column", gap: "0.3rem" }}>
+            <div
+              style={{
+                maxWidth: isDesktop ? "80%" : "92%",
+                display: "flex",
+                flexDirection: "column",
+                gap: "0.3rem",
+                minWidth: 0,
+              }}
+            >
               <div
                 style={{
                   borderRadius: isUser ? "16px 16px 4px 16px" : "16px 16px 16px 4px",
@@ -259,6 +271,8 @@ export default function ChatMessages({ messages, loading }: Props) {
                     ? "1px solid var(--accent-rim)"
                     : "1px solid var(--border)",
                   fontFamily: "var(--font-body)",
+                  overflowWrap: "anywhere",
+                  wordBreak: "break-word",
                 }}
               >
                 {isUser ? (
