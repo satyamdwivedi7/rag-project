@@ -113,7 +113,7 @@ New props: `brief: DocumentBrief | null`, `onAskQuestion: (q: string) => void`.
 - Topic chips row (same style as the existing filename badge in the top bar)
 - "Ask a question" label + 5 question items as clickable rows (hover uses `--accent-pale`, font matches existing muted style)
 
-Footer (ChromaDB · Gemini 2.5 Flash · FastAPI) remains.
+Footer (Gemini 2.5 Flash · Next.js · Vercel) remains.
 
 ### `ChatMessages.tsx`
 

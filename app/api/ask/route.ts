@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { GoogleGenerativeAI, SchemaType, type Schema } from "@google/generative-ai";
+import { GEMINI_FILE_URI_PREFIX } from "../../lib/gemini";
 
 const genai = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
 
@@ -36,10 +37,17 @@ export async function POST(req: NextRequest) {
   try {
     const { question, fileUri } = await req.json();
 
-    if (!fileUri) {
+    if (!fileUri || !String(fileUri).startsWith(GEMINI_FILE_URI_PREFIX)) {
       return NextResponse.json(
-        { answer: "No document uploaded. Please upload a PDF first.", citations: [] },
-        { status: 200 }
+        { error: "Invalid or missing document URI." },
+        { status: 400 }
+      );
+    }
+
+    if (!question?.trim()) {
+      return NextResponse.json(
+        { error: "No question provided." },
+        { status: 400 }
       );
     }
 
@@ -73,7 +81,7 @@ Question: ${question}`,
     const message = err instanceof Error ? err.message : String(err);
     console.error("Ask error:", message);
     return NextResponse.json(
-      { answer: `Request failed: ${message}`, citations: [] },
+      { error: `Request failed: ${message}` },
       { status: 500 }
     );
   }
