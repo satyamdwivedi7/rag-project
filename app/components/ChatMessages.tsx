@@ -43,16 +43,14 @@ export default function ChatMessages({ messages, loading }: Props) {
             height: "100%",
           }}
         >
-          <p
-            style={{
-              fontSize: "0.78rem",
-              color: "var(--fg-muted)",
-              fontFamily: "var(--font-body)",
-              textAlign: "center",
-            }}
-          >
-            Upload a document to begin
-          </p>
+          <div style={{ textAlign: "center", display: "flex", flexDirection: "column", alignItems: "center", gap: "0.6rem" }}>
+            <div style={{ fontSize: "0.72rem", color: "var(--fg-muted)", fontFamily: "var(--font-body)" }}>
+              ← Upload PDFs in the panel on the left
+            </div>
+            <div style={{ fontSize: "0.65rem", color: "var(--fg-muted)", fontFamily: "var(--font-body)", opacity: 0.6 }}>
+              then ask questions here
+            </div>
+          </div>
         </div>
       )}
 

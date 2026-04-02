@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { GoogleGenerativeAI, SchemaType, type Schema } from "@google/generative-ai";
+import { GEMINI_FILE_URI_PREFIX } from "../../lib/gemini";
 
 const genai = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
 
@@ -48,7 +49,6 @@ export async function POST(req: NextRequest) {
   try {
     const { question, docs }: { question: string; docs: DocRef[] } = await req.json();
 
-    const GEMINI_FILE_URI_PREFIX = "https://generativelanguage.googleapis.com/";
     if (!Array.isArray(docs) || docs.length < 2) {
       return NextResponse.json(
         { error: "Compare requires at least 2 documents" },
@@ -79,7 +79,10 @@ export async function POST(req: NextRequest) {
       fileData: { mimeType: "application/pdf" as const, fileUri: doc.fileUri },
     }));
 
-    const docList = docs.map((d, i) => `${i + 1}. ${d.fileName}`).join("\n");
+    // Sanitize user-supplied filenames before prompt injection
+    const safeFileName = (name: string) =>
+      name.replace(/[^a-zA-Z0-9._\- ]/g, "").trim() || `Document`;
+    const docList = docs.map((d, i) => `${i + 1}. ${safeFileName(d.fileName)}`).join("\n");
 
     const result = await model.generateContent([
       ...fileParts,

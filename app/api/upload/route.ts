@@ -4,6 +4,7 @@ import { GoogleGenerativeAI, SchemaType, type Schema } from "@google/generative-
 import { writeFile, unlink } from "fs/promises";
 import { tmpdir } from "os";
 import { join } from "path";
+import { MAX_UPLOAD_BYTES } from "../../lib/gemini";
 
 const genai = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
 
@@ -39,6 +40,10 @@ export async function POST(req: NextRequest) {
 
     if (file.type !== "application/pdf" && !file.name.toLowerCase().endsWith(".pdf")) {
       return NextResponse.json({ error: "Only PDF files are supported" }, { status: 400 });
+    }
+
+    if (file.size > MAX_UPLOAD_BYTES) {
+      return NextResponse.json({ error: "File too large (max 50 MB)" }, { status: 400 });
     }
 
     const buffer = Buffer.from(await file.arrayBuffer());

@@ -20,50 +20,79 @@ export default function ChatInput({
   selectedCount = 0,
 }: Props) {
   const canCompare = selectedCount >= 2;
+  const showCompareBanner = canCompare && onToggleCompare;
 
   return (
     <div
       style={{
         flexShrink: 0,
-        padding: "0.75rem 1.25rem 1.25rem",
         borderTop: "1px solid var(--border-light)",
         background: "var(--bg)",
       }}
     >
-      <div style={{ display: "flex", gap: 8 }}>
-        {onToggleCompare && (
+      {/* Compare mode discovery banner */}
+      {showCompareBanner && (
+        <div
+          style={{
+            padding: "0.55rem 1.25rem",
+            borderBottom: "1px solid var(--border-light)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            background: compareMode ? "var(--accent-pale)" : "var(--surface)",
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+            <svg
+              width="13"
+              height="13"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke={compareMode ? "var(--accent)" : "var(--fg-muted)"}
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <rect x="3" y="3" width="7" height="18" rx="1" />
+              <rect x="14" y="3" width="7" height="18" rx="1" />
+            </svg>
+            <span
+              style={{
+                fontSize: "0.68rem",
+                fontFamily: "var(--font-body)",
+                color: compareMode ? "var(--accent)" : "var(--fg-muted)",
+                letterSpacing: "0.01em",
+              }}
+            >
+              {compareMode
+                ? `Compare mode — asking across ${selectedCount} documents`
+                : `${selectedCount} documents selected — enable Compare mode to cross-analyze them`}
+            </span>
+          </div>
           <button
-            disabled={!canCompare}
             onClick={onToggleCompare}
-            title={
-              canCompare
-                ? compareMode
-                  ? "Switch to single-doc mode"
-                  : "Switch to compare mode"
-                : "Select 2+ documents to compare"
-            }
             style={{
-              borderRadius: 10,
-              padding: "0.65rem 0.8rem",
-              fontSize: "0.75rem",
-              fontWeight: 500,
+              fontSize: "0.65rem",
               fontFamily: "var(--font-body)",
-              cursor: canCompare ? "pointer" : "not-allowed",
-              background:
-                compareMode && canCompare ? "var(--accent-pale)" : "var(--border-light)",
-              color:
-                compareMode && canCompare ? "var(--accent)" : "var(--fg-muted)",
-              border: "1.5px solid",
-              borderColor:
-                compareMode && canCompare ? "var(--accent-rim)" : "var(--border)",
-              opacity: canCompare ? 1 : 0.45,
-              letterSpacing: "0.01em",
-              flexShrink: 0,
+              fontWeight: 600,
+              cursor: "pointer",
+              padding: "0.2rem 0.6rem",
+              borderRadius: 6,
+              border: "1px solid",
+              borderColor: compareMode ? "var(--accent-rim)" : "var(--border)",
+              background: compareMode ? "var(--accent)" : "transparent",
+              color: compareMode ? "#fff" : "var(--fg-secondary)",
+              letterSpacing: "0.03em",
+              transition: "all 0.15s",
             }}
           >
-            Compare
+            {compareMode ? "On" : "Off"}
           </button>
-        )}
+        </div>
+      )}
+
+      {/* Input row */}
+      <div style={{ padding: "0.75rem 1.25rem 1.25rem", display: "flex", gap: 8 }}>
         <input
           disabled={disabled}
           value={value}
@@ -73,11 +102,9 @@ export default function ChatInput({
           }}
           placeholder={
             disabled
-              ? compareMode
-                ? "Select 2+ documents to compare"
-                : "Upload a document first"
+              ? "Upload a document first"
               : compareMode
-              ? "Ask a question across selected documents…"
+              ? "Ask a question across all selected documents…"
               : "Ask anything about your document…"
           }
           style={{

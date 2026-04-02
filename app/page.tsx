@@ -9,14 +9,14 @@ import ThemeToggle from "./components/ThemeToggle";
 export default function Home() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [question, setQuestion] = useState("");
-  const [uploading, setUploading] = useState(false);
+  const [uploadingCount, setUploadingCount] = useState(0);
   const [loading, setLoading] = useState(false);
   const [docs, setDocs] = useState<UploadedDoc[]>([]);
   const [selectedUris, setSelectedUris] = useState<Set<string>>(new Set());
   const [compareMode, setCompareMode] = useState(false);
 
   const handleUpload = async (file: File) => {
-    setUploading(true);
+    setUploadingCount((n) => n + 1);
     try {
       const form = new FormData();
       form.append("file", file);
@@ -44,7 +44,7 @@ export default function Home() {
         },
       ]);
     } finally {
-      setUploading(false);
+      setUploadingCount((n) => n - 1);
     }
   };
 
@@ -145,7 +145,7 @@ export default function Home() {
         selectedUris={selectedUris}
         onToggleDoc={handleToggleDoc}
         onUpload={handleUpload}
-        uploading={uploading}
+        uploading={uploadingCount > 0}
         onAskQuestion={(q) => {
           setCompareMode(false);
           handleSend(q);
