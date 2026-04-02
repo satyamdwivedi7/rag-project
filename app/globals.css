@@ -46,10 +46,19 @@
 
 html, body {
   height: 100%;
+  width: 100%;
   background: var(--bg);
   color: var(--fg);
   font-family: var(--font-body), "Outfit", system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+p,
+span,
+li,
+button {
+  overflow-wrap: anywhere;
 }
 
 [data-theme="dark"] .prose {

@@ -3,6 +3,7 @@ import { useRef, useState } from "react";
 import type { UploadedDoc } from "../types";
 
 type Props = {
+  isDesktop: boolean;
   docs: UploadedDoc[];
   selectedUris: Set<string>;
   onToggleDoc: (fileUri: string) => void;
@@ -12,6 +13,7 @@ type Props = {
 };
 
 export default function LeftPanel({
+  isDesktop,
   docs,
   selectedUris,
   onToggleDoc,
@@ -76,9 +78,9 @@ export default function LeftPanel({
       onDragOver={handleDragOver}
       onDrop={handleDrop}
       style={{
-        width: "38%",
-        minWidth: 300,
-        maxWidth: 460,
+        width: isDesktop ? "38%" : "100%",
+        minWidth: 0,
+        maxWidth: isDesktop ? 460 : "none",
         flexShrink: 0,
         background: "var(--bg-left)",
         borderRight: "1px solid var(--border)",
@@ -134,7 +136,12 @@ export default function LeftPanel({
       />
 
       {/* Brand header */}
-      <div style={{ padding: "1.5rem 1.75rem 1rem", flexShrink: 0 }}>
+      <div
+        style={{
+          padding: isDesktop ? "1.5rem 1.75rem 1rem" : "1.1rem 0.9rem 0.8rem",
+          flexShrink: 0,
+        }}
+      >
         <div
           style={{
             fontSize: "0.58rem",
@@ -152,7 +159,7 @@ export default function LeftPanel({
           style={{
             fontFamily: "var(--font-display)",
             fontWeight: 700,
-            fontSize: "clamp(1.9rem, 3vw, 2.5rem)",
+             fontSize: isDesktop ? "clamp(1.9rem, 3vw, 2.5rem)" : "clamp(1.6rem, 6vw, 2rem)",
             lineHeight: 1.05,
             letterSpacing: "-0.03em",
             color: "var(--fg)",
@@ -170,7 +177,7 @@ export default function LeftPanel({
           overflow: "hidden",
           display: "flex",
           flexDirection: "column",
-          padding: "0 1.75rem 1.25rem",
+          padding: isDesktop ? "0 1.75rem 1.25rem" : "0 0.9rem 0.85rem",
         }}
       >
         {docs.length === 0 ? (
@@ -217,7 +224,7 @@ export default function LeftPanel({
               style={{
                 border: "2px dashed var(--border)",
                 borderRadius: 10,
-                padding: "1.75rem 1rem",
+                 padding: isDesktop ? "1.75rem 1rem" : "1.25rem 0.8rem",
                 background: "transparent",
                 cursor: uploading ? "not-allowed" : "pointer",
                 textAlign: "center",
@@ -381,7 +388,7 @@ export default function LeftPanel({
                 borderBottom: "1px solid var(--border-light)",
               }}
             >
-              <div style={{ display: "flex", alignItems: "center", gap: "0.45rem" }}>
+                 <div style={{ display: "flex", alignItems: "center", gap: "0.45rem", minWidth: 0 }}>
                 <span
                   style={{
                     fontSize: "0.62rem",
@@ -409,11 +416,11 @@ export default function LeftPanel({
                   {docs.length}
                 </span>
               </div>
-              <button
+                 <button
                 onClick={() => fileRef.current?.click()}
                 disabled={uploading}
-                style={{
-                  fontSize: "0.65rem",
+                   style={{
+                     fontSize: "0.65rem",
                   color: uploading ? "var(--fg-muted)" : "var(--accent)",
                   fontFamily: "var(--font-body)",
                   cursor: uploading ? "not-allowed" : "pointer",
@@ -422,9 +429,10 @@ export default function LeftPanel({
                   border: "1px dashed var(--accent-rim)",
                   background: "transparent",
                   letterSpacing: "0.03em",
-                  transition: "background 0.15s",
-                }}
-              >
+                     transition: "background 0.15s",
+                     flexShrink: 0,
+                   }}
+                 >
                 {uploading ? "Uploading…" : "+ Add more"}
               </button>
             </div>
@@ -470,17 +478,18 @@ export default function LeftPanel({
                       onClick={(e) => e.stopPropagation()}
                       style={{ cursor: "pointer", accentColor: "var(--accent)", flexShrink: 0 }}
                     />
-                    <span
-                      style={{
-                        fontSize: "0.74rem",
+                     <span
+                       style={{
+                          fontSize: "0.74rem",
                         color: "var(--fg-secondary)",
                         fontFamily: "var(--font-body)",
                         flex: 1,
                         overflow: "hidden",
                         textOverflow: "ellipsis",
-                        whiteSpace: "nowrap",
-                      }}
-                    >
+                         whiteSpace: "nowrap",
+                         minWidth: 0,
+                       }}
+                     >
                       {doc.fileName}
                     </span>
                     {doc.brief && (
@@ -509,7 +518,7 @@ export default function LeftPanel({
                   {expandedUri === doc.fileUri && doc.brief && (
                     <div
                       style={{
-                        marginLeft: "1.5rem",
+                        marginLeft: isDesktop ? "1.5rem" : "1rem",
                         marginTop: "0.2rem",
                         marginBottom: "0.2rem",
                         padding: "0.5rem 0.6rem",
@@ -615,8 +624,8 @@ export default function LeftPanel({
             <div
               style={{
                 flexShrink: 0,
-                marginTop: "0.75rem",
-                padding: "0.5rem 0.75rem",
+              marginTop: "0.75rem",
+              padding: "0.5rem 0.75rem",
                 background: "var(--accent-pale)",
                 border: "1px solid var(--accent-rim)",
                 borderRadius: 8,
@@ -631,6 +640,7 @@ export default function LeftPanel({
                   color: "var(--accent)",
                   fontFamily: "var(--font-body)",
                   lineHeight: 1.45,
+                  overflowWrap: "anywhere",
                 }}
               >
                 {nudgeText}
@@ -644,7 +654,7 @@ export default function LeftPanel({
       <div
         style={{
           flexShrink: 0,
-          padding: "0.65rem 1.75rem",
+          padding: isDesktop ? "0.65rem 1.75rem" : "0.55rem 0.9rem",
           borderTop: "1px solid var(--border-light)",
         }}
       >

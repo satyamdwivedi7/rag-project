@@ -8,6 +8,7 @@ type Props = {
   compareMode?: boolean;
   onToggleCompare?: () => void;
   selectedCount?: number;
+  isDesktop: boolean;
 };
 
 export default function ChatInput({
@@ -18,6 +19,7 @@ export default function ChatInput({
   compareMode = false,
   onToggleCompare,
   selectedCount = 0,
+  isDesktop,
 }: Props) {
   const canCompare = selectedCount >= 2;
   const showCompareBanner = canCompare && onToggleCompare;
@@ -34,15 +36,17 @@ export default function ChatInput({
       {showCompareBanner && (
         <div
           style={{
-            padding: "0.55rem 1.25rem",
+            padding: isDesktop ? "0.55rem 1.25rem" : "0.45rem 0.8rem",
             borderBottom: "1px solid var(--border-light)",
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
             background: compareMode ? "var(--accent-pale)" : "var(--surface)",
+            gap: "0.6rem",
+            flexWrap: "wrap",
           }}
         >
-          <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", minWidth: 0 }}>
             <svg
               width="13"
               height="13"
@@ -62,6 +66,7 @@ export default function ChatInput({
                 fontFamily: "var(--font-body)",
                 color: compareMode ? "var(--accent)" : "var(--fg-muted)",
                 letterSpacing: "0.01em",
+                overflowWrap: "anywhere",
               }}
             >
               {compareMode
@@ -84,6 +89,7 @@ export default function ChatInput({
               color: compareMode ? "#fff" : "var(--fg-secondary)",
               letterSpacing: "0.03em",
               transition: "all 0.15s",
+              flexShrink: 0,
             }}
           >
             {compareMode ? "On" : "Off"}
@@ -92,7 +98,14 @@ export default function ChatInput({
       )}
 
       {/* Input row */}
-      <div style={{ padding: "0.75rem 1.25rem 1.25rem", display: "flex", gap: 8 }}>
+      <div
+        style={{
+          padding: isDesktop ? "0.75rem 1.25rem 1.25rem" : "0.65rem 0.8rem 0.8rem",
+          display: "flex",
+          gap: 8,
+          alignItems: "stretch",
+        }}
+      >
         <input
           disabled={disabled}
           value={value}
@@ -120,6 +133,7 @@ export default function ChatInput({
             opacity: disabled ? 0.45 : 1,
             cursor: disabled ? "not-allowed" : "text",
             transition: "border-color 0.15s",
+            minWidth: 0,
           }}
           onFocus={(e) => {
             if (!disabled) e.currentTarget.style.borderColor = "var(--accent-rim)";
@@ -148,6 +162,8 @@ export default function ChatInput({
               disabled || !value.trim() ? "var(--border)" : "var(--accent-rim)",
             opacity: disabled ? 0.45 : 1,
             letterSpacing: "0.01em",
+            whiteSpace: "nowrap",
+            flexShrink: 0,
           }}
         >
           {compareMode ? "Compare" : "Send"}
